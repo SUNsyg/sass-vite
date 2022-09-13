@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: Sun yinge
  * @Date: 2022-08-16 16:02:36
- * @LastEditTime: 2022-08-16 16:33:28
+ * @LastEditTime: 2022-09-13 13:59:35
  * @LastEditors: Sun yinge
 -->
 <template>
@@ -10,12 +10,17 @@
 		<div class='content'>
 			<div class='navigation'>
 				<ul>
-					<li>
+					<li
+						v-for="item in getFirstList"
+						:key="item.id"
+						@mouseenter="mourseHover(item.id)"
+						@mouseleave="mourseOut"
+					>
 						<router-link to='/'>
-							Node.js
+							{{item.categoryName}}
 							<el-icon color='#ffffff' :size='16'><arrow-right /></el-icon>
 						</router-link>
-						<div class='category-detail'>
+						<div class='category-detail' v-if="isFirstFlag">
 							<div class='detail-main'>
 								<div class='detail-desc'>基础知识</div>
 								<div class='detail-list'>
@@ -133,12 +138,29 @@
 
 <script setup>
 import { ArrowRight } from "@element-plus/icons-vue";
-
+// api文件
 import { getFirstCategorys } from '../../utils/api/courseManage';
 
+// 获取一级课程分类的数据
+let getFirstList = ref([]);
+// 第一次移入的布尔值
+let isFirstFlag = ref(false);
+// 生命周期
 onBeforeMount(() => {
-    
+	// 获取一级课程分类
+    getFirstCategorys().then((res) => {
+		getFirstList.value = res.data.list
+		console.log(res.data.list)
+	})
 })
+
+const mourseHover = (id) => {
+	isFirstFlag.value = true
+	console.log(id)
+}
+const mourseOut = () => {
+	isFirstFlag.value = false
+}
 </script>
 
 <style scoped>
